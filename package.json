@@ -1,9 +1,16 @@
-﻿{
-  "name": "@platform/contracts",
+{
+  "name": "@deenorepository/contracts",
   "version": "1.0.0",
   "description": "Enterprise Event Bus contracts, module interfaces and security types for EMS Platform",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DeenoRepository/platform-contracts.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "scripts": {
     "build": "tsc",
     "test": "vitest run"

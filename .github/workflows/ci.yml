@@ -1,0 +1,47 @@
+name: CI & Publish Package
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@deenorepository'
+      - name: Install dependencies
+        run: npm install
+      - name: Run TDD unit tests
+        run: npm test
+      - name: Build TypeScript
+        run: npm run build
+
+  publish:
+    needs: test-and-build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@deenorepository'
+      - name: Install & Build
+        run: |
+          npm install
+          npm run build
+      - name: Publish to GitHub Packages
+        run: npm publish --access restricted || echo "Package version already published"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
